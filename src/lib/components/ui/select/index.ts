@@ -10,28 +10,31 @@ import ScrollDownButton from "./select-scroll-down-button.svelte";
 import ScrollUpButton from "./select-scroll-up-button.svelte";
 import GroupHeading from "./select-group-heading.svelte";
 
+import SelectionPill from "$lib/components/Select/SelectionPill.svelte";
+
 const Root = SelectPrimitive.Root;
 
 export {
-	Root,
-	Group,
-	Label,
-	Item,
-	Content,
-	Trigger,
-	Separator,
-	ScrollDownButton,
-	ScrollUpButton,
-	GroupHeading,
-	//
-	Root as Select,
-	Group as SelectGroup,
-	Label as SelectLabel,
-	Item as SelectItem,
-	Content as SelectContent,
-	Trigger as SelectTrigger,
-	Separator as SelectSeparator,
-	ScrollDownButton as SelectScrollDownButton,
-	ScrollUpButton as SelectScrollUpButton,
-	GroupHeading as SelectGroupHeading,
+  Root,
+  Group,
+  Label,
+  Item,
+  Content,
+  Trigger,
+  Separator,
+  ScrollDownButton,
+  ScrollUpButton,
+  GroupHeading,
+  //
+  Root as Select,
+  Group as SelectGroup,
+  Label as SelectLabel,
+  Item as SelectItem,
+  Content as SelectContent,
+  Trigger as SelectTrigger,
+  Separator as SelectSeparator,
+  ScrollDownButton as SelectScrollDownButton,
+  ScrollUpButton as SelectScrollUpButton,
+  GroupHeading as SelectGroupHeading,
+  SelectionPill,
 };
