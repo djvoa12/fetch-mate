@@ -1,6 +1,13 @@
+declare global {
+  interface Window {
+    removeFavDog: (dogId: string) => void;
+  }
+}
+
 export interface Dog {
   age: number;
   breed: string;
+  checked?: boolean;
   id: string;
   img: string;
   name: string;
@@ -19,4 +26,11 @@ export interface Location {
 export interface Coordinates {
   lat: number;
   lon: number;
+}
+
+export interface QueryResult {
+  next?: string;
+  prev?: string;
+  resultIds: string[];
+  total: number;
 }
