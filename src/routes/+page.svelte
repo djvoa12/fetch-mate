@@ -5,11 +5,14 @@
   import { Button } from '$lib/components/ui/button';
   import * as Pagination from '$lib/components/ui/pagination';
   import * as Select from '$lib/components/ui/select';
+  import { Slider } from '$lib/components/ui/slider';
   import { store } from '$lib/stores/app.svelte';
   import type { Dog } from '$lib/types';
   import type { ICellRendererParams, SortDirection } from 'ag-grid-community';
   import { onMount } from 'svelte';
 
+  const AGE_MIN = 0;
+  const AGE_MAX = 20;
   const PAGE_SIZE = 25;
   const COL_DEFS = [
     {
@@ -63,6 +66,7 @@
 
   let sort: string = 'breed:asc';
 
+  let ageRange = $state<[number, number]>([AGE_MIN, AGE_MAX]);
   let breeds = $state<string[]>([]);
   let count = $state<number>(0);
   let dogs = $state<Dog[]>([]);
@@ -103,8 +107,13 @@
   }
 
   function generateQueryParams() {
-    const from = (page - 1) * PAGE_SIZE;
-    return { breeds: selectedBreeds, from, sort };
+    return {
+      ageMax: ageRange[1],
+      ageMin: ageRange[0],
+      breeds: selectedBreeds,
+      from: (page - 1) * PAGE_SIZE,
+      sort
+    };
   }
 
   function sortDogs(colId: string, direction: SortDirection) {
@@ -158,10 +167,32 @@
       </Select.Content>
     </Select.Root>
 
-    <span>{store.favoriteDogs.length} selected</span>
+    <div class="flex flex-col">
+      <label class="text-xs" for="dual-slider">Age Filter: {ageRange[0]} - {ageRange[1]}</label>
+      <div class="flex gap-2 mt-1" id="dual-slider">
+        <span class="text-sm">{AGE_MIN}</span>
+        <Slider
+          class="w-[180px]"
+          max={AGE_MAX}
+          step={1}
+          type="multiple"
+          bind:value={ageRange}
+          onValueCommit={() => {
+            const params = generateQueryParams();
+            queryDogs(params);
+          }}
+        />
+        <span class="text-sm">{AGE_MAX}</span>
+      </div>
+    </div>
   </div>
 
-  <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/favorites')}>Next</Button>
+  <div class="flex gap-4 items-center">
+    {#if store.favoriteDogs.length}
+      <span>{store.favoriteDogs.length} selected</span>
+    {/if}
+    <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/favorites')}>Next</Button>
+  </div>
 </div>
 
 <AgTable
