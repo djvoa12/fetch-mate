@@ -37,5 +37,6 @@ export interface QueryResult {
 
 /** Keys in the TableRow type are for intellisense purposes. Since this object is so flexible, must be "any" for value of key */
 export interface TableRow {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: symbol | string]: any;
 }
