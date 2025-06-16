@@ -10,6 +10,8 @@
   import type { AgColumn, ColDef, GridApi, GridOptions, SortDirection } from 'ag-grid-community';
   import { onMount } from 'svelte';
 
+  type RowData = Record<string, string | number | boolean | undefined>;
+
   ModuleRegistry.registerModules([AllCommunityModule]);
   provideGlobalGridOptions({ theme: 'legacy' });
 
@@ -18,7 +20,7 @@
     columnDefs: ColDef[];
     gridOptions?: GridOptions;
     isLoading?: boolean;
-    rowData: Record<string, any>[];
+    rowData: RowData[];
     onSelect?: (dogs: Dog[]) => void;
     onSort?: (colId: string, direction: SortDirection) => void;
   }
