@@ -1,6 +1,6 @@
 <script lang="ts">
   import { store } from '$lib/stores/app.svelte';
-  import type { Dog } from '$lib/types';
+  import type { Dog, TableRow } from '$lib/types';
   import {
     AllCommunityModule,
     ModuleRegistry,
@@ -10,8 +10,6 @@
   import type { AgColumn, ColDef, GridApi, GridOptions, SortDirection } from 'ag-grid-community';
   import { onMount } from 'svelte';
 
-  type RowData = Record<string, string | number | boolean | undefined>;
-
   ModuleRegistry.registerModules([AllCommunityModule]);
   provideGlobalGridOptions({ theme: 'legacy' });
 
@@ -20,7 +18,7 @@
     columnDefs: ColDef[];
     gridOptions?: GridOptions;
     isLoading?: boolean;
-    rowData: RowData[];
+    rowData: TableRow[];
     onSelect?: (dogs: Dog[]) => void;
     onSort?: (colId: string, direction: SortDirection) => void;
   }

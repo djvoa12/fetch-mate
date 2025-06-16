@@ -34,3 +34,8 @@ export interface QueryResult {
   resultIds: string[];
   total: number;
 }
+
+/** Keys in the TableRow type are for intellisense purposes. Since this object is so flexible, must be "any" for value of key */
+export interface TableRow {
+  [key: symbol | string]: any;
+}
