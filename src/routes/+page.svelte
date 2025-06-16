@@ -1,2 +1,206 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+  import { goto } from '$app/navigation';
+  import { getAllBreeds, getDogs, queryDogIds } from '$lib/api';
+  import AgTable from '$lib/components/Table/AgTable.svelte';
+  import { Button } from '$lib/components/ui/button';
+  import * as Pagination from '$lib/components/ui/pagination';
+  import * as Select from '$lib/components/ui/select';
+  import { store } from '$lib/stores/app.svelte';
+  import type { Dog } from '$lib/types';
+  import type { ICellRendererParams, SortDirection } from 'ag-grid-community';
+  import { onMount } from 'svelte';
+
+  const PAGE_SIZE = 25;
+  const COL_DEFS = [
+    {
+      field: 'checked',
+      cellRenderer: (params: ICellRendererParams) => {
+        if (params.value) params.node.setSelected(true);
+        return params.value;
+      },
+      checkboxSelection: true,
+      headerName: '',
+      maxWidth: 50,
+      minWidth: 50
+    },
+    {
+      autoHeight: true,
+      cellRenderer: ({ value }: ICellRendererParams) => {
+        return `<img src="${value}" alt="dog profile" />`;
+      },
+      field: 'img',
+      flex: 1,
+      headerName: '',
+      minWidth: 140,
+      sortable: false
+    },
+    {
+      field: 'name',
+      flex: 1,
+      headerName: 'Name',
+      minWidth: 120
+    },
+    {
+      field: 'breed',
+      flex: 1,
+      headerName: 'Breed',
+      minWidth: 235
+    },
+    {
+      field: 'age',
+      flex: 1,
+      headerName: 'Age',
+      minWidth: 70
+    },
+    {
+      field: 'zip_code',
+      flex: 1,
+      headerName: 'Zip Code',
+      minWidth: 100,
+      sortable: false
+    }
+  ];
+
+  let sort: string = 'breed:asc';
+
+  let breeds = $state<string[]>([]);
+  let count = $state<number>(0);
+  let dogs = $state<Dog[]>([]);
+  let isLoading = $state<boolean>(false);
+  let page = $state<number>(1);
+  let selectedBreeds = $state<string[]>([]);
+
+  onMount(() => {
+    fetchAllBreeds();
+    queryDogs({ sort });
+  });
+
+  async function fetchAllBreeds() {
+    try {
+      breeds = await getAllBreeds();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function queryDogs(queryParams: Record<string, string | number | string[]>) {
+    isLoading = true;
+
+    try {
+      const { resultIds, total } = await queryDogIds(queryParams);
+      count = total;
+      const fetchedDogs = await getDogs(resultIds);
+
+      dogs = fetchedDogs.map((dog) => ({
+        ...dog,
+        checked: store.favoriteDogIds.has(dog.id)
+      }));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  function generateQueryParams() {
+    const from = (page - 1) * PAGE_SIZE;
+    return { breeds: selectedBreeds, from, sort };
+  }
+
+  function sortDogs(colId: string, direction: SortDirection) {
+    sort = direction === null ? 'breed:asc' : `${colId}:${direction}`;
+    const params = generateQueryParams();
+    queryDogs(params);
+  }
+
+  function selectDogs(selectedDogs: Dog[]) {
+    const currentPageDogIds = new Set(dogs.map((d) => d.id));
+    // Remove dogs from store that are on the current page but not selected
+    const keptDogs = store.favoriteDogs.filter((dog) => !currentPageDogIds.has(dog.id));
+    const newFavorites = [...keptDogs, ...selectedDogs];
+    store.favoriteDogs = newFavorites;
+  }
+</script>
+
+<div class="toolbar flex mb-4 justify-between flex-wrap">
+  <div class="flex items-center gap-4">
+    <Select.Root
+      type="multiple"
+      bind:value={selectedBreeds}
+      onValueChange={() => {
+        const params = generateQueryParams();
+        queryDogs(params);
+      }}
+    >
+      <Select.Trigger class="w-[190px]">
+        <div class="flex items-center">
+          <Select.SelectionPill
+            count={selectedBreeds.length}
+            onClear={() => {
+              selectedBreeds = [];
+              const params = generateQueryParams();
+              queryDogs(params);
+            }}
+          />
+          Breed Filter
+        </div>
+      </Select.Trigger>
+
+      <Select.Content>
+        {#each breeds as breed (breed)}
+          <Select.Item value={breed}>{breed}</Select.Item>
+        {/each}
+      </Select.Content>
+    </Select.Root>
+
+    <span>{store.favoriteDogs.length} selected</span>
+  </div>
+
+  <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/favorites')}>
+    View Selection
+  </Button>
+</div>
+
+<AgTable
+  class="w-full mb-4"
+  columnDefs={COL_DEFS}
+  {isLoading}
+  rowData={dogs}
+  onSelect={selectDogs}
+  onSort={sortDogs}
+/>
+
+<Pagination.Root
+  {count}
+  bind:page
+  perPage={PAGE_SIZE}
+  onPageChange={() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const params = generateQueryParams();
+    queryDogs(params);
+  }}
+>
+  {#snippet children({ pages, currentPage })}
+    <Pagination.Content>
+      <Pagination.Item>
+        <Pagination.PrevButton />
+      </Pagination.Item>
+      {#each pages as page (page.key)}
+        {#if page.type === 'ellipsis'}
+          <Pagination.Item>
+            <Pagination.Ellipsis />
+          </Pagination.Item>
+        {:else}
+          <Pagination.Item>
+            <Pagination.Link {page} isActive={currentPage === page.value}>
+              {page.value}
+            </Pagination.Link>
+          </Pagination.Item>
+        {/if}
+      {/each}
+      <Pagination.Item>
+        <Pagination.NextButton />
+      </Pagination.Item>
+    </Pagination.Content>
+  {/snippet}
+</Pagination.Root>
