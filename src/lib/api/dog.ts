@@ -32,7 +32,7 @@ export const queryDogIds = async (queryParams: Record<string, any>): Promise<Que
     } else {
       console.error(e);
     }
-    return { resultIds: [], total : 0 };
+    return { resultIds: [], total: 0 };
   }
 };
 

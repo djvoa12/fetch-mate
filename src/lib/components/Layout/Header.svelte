@@ -14,7 +14,7 @@
   <div class="flex gap-6 items-center">
     <h1 class="text-2xl">
       Fetch Mate
-     <span class="material-icons relative top-[2px]">pets</span>
+      <span class="material-icons relative top-[2px]">pets</span>
     </h1>
     <a class={getActiveClass('/')} href="/">Search</a>
     {#if store.favoriteDogs.length}

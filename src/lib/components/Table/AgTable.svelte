@@ -41,12 +41,12 @@
       onSortChanged: (e) => {
         if (onSort) {
           gridApi!.setGridOption('rowData', []);
-          const sortColumn = (e.columns as AgColumn[])
-            .find((c) => c.sort !== undefined) as AgColumn;
+          const sortColumn = (e.columns as AgColumn[]).find(
+            (c) => c.sort !== undefined
+          ) as AgColumn;
           onSort(sortColumn.colId, sortColumn.sort as SortDirection);
         }
       }
-      
     },
     isLoading = false,
     onSelect,
