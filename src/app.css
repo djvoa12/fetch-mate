@@ -138,3 +138,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-primary);
 }
+
+.orange {
+  color: var(--fetch-orange);
+}

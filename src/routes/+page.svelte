@@ -122,6 +122,11 @@
   }
 </script>
 
+<h1 class="mb-2">
+  <span class="orange">Step 1:</span>
+  Select your favorites wagsters!
+</h1>
+
 <div class="toolbar flex mb-4 justify-between flex-wrap">
   <div class="flex items-center gap-4">
     <Select.Root
@@ -156,9 +161,7 @@
     <span>{store.favoriteDogs.length} selected</span>
   </div>
 
-  <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/favorites')}>
-    View Selection
-  </Button>
+  <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/favorites')}>Next</Button>
 </div>
 
 <AgTable

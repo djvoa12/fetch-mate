@@ -64,6 +64,11 @@
   };
 </script>
 
+<h1 class="mb-2">
+  <span class="orange">Step 2:</span>
+  Review your pups and fetch!
+</h1>
+
 <div class="toolbar flex mb-4 justify-between flex-wrap">
   <Button variant="link" onclick={() => goto('/')}>
     <span class="material-icons">arrow_back</span>
@@ -79,9 +84,7 @@
       Clear All
     </Button>
 
-    <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/match')}>
-      Submit Favs
-    </Button>
+    <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/match')}>Fetch Mate</Button>
   </div>
 </div>
 

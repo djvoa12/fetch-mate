@@ -6,7 +6,7 @@
   import { onToggleTheme } from '$lib/utils';
 
   function getActiveClass(route: string) {
-    return page.route.id === route ? 'text-[var(--fetch-orange)]' : '';
+    return page.route.id === route ? 'orange' : '';
   }
 </script>
 

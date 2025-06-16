@@ -30,7 +30,7 @@
 {#if matchedDog}
   <h1 class="text-center mb-4">
     You've been matched!
-    <span class="material-icons relative top-[5px]">pets</span>
+    <span class="material-icons relative top-[5px] orange">pets</span>
   </h1>
 {/if}
 
@@ -44,8 +44,8 @@
     </Card.Header>
     <Card.Content class="flex flex-col gap-2">
       <img src={matchedDog.img} alt="dog profile" />
-      <p>Age: {matchedDog.age}</p>
-      <p>Zip Code: {matchedDog.zip_code}</p>
+      <p class="text-sm">Age: {matchedDog.age}</p>
+      <p class="text-sm">Zip Code: {matchedDog.zip_code}</p>
     </Card.Content>
   {/if}
 </Card.Root>
