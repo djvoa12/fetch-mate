@@ -6,10 +6,17 @@
 </script>
 
 <header class="header flex justify-between items-center bg-secondary py-3 px-8">
-  <h1 class="text-2xl">
-    Fetch Mate
-    <span class="material-icons relative top-[2px]">pets</span>
-  </h1>
+  <div class="flex gap-6 items-center">
+    <h1 class="text-2xl">
+      Fetch Mate
+     <span class="material-icons relative top-[2px]">pets</span>
+    </h1>
+    <a href="/">Search</a>
+    {#if store.favoriteDogs.length}
+      <a href="/favorites">Favorites</a>
+      <a href="/match">Match</a>
+    {/if}
+  </div>
 
   <div class="flex gap-4">
     <Button size="icon" variant="ghost" onclick={onToggleTheme}>
