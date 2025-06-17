@@ -83,6 +83,8 @@
   let selectedBreeds = $state<string[]>([]);
   let zipCode = $state<string>('');
 
+  let isValidZipCode = $derived<boolean>(/^\d{5}$/.test(zipCode));
+
   onMount(() => {
     fetchAllBreeds();
     queryDogs({ sort });
@@ -229,16 +231,21 @@
     <label class="text-xs" for="zip-code-input">Location</label>
 
     <div class="flex">
-      <Input
-        class="max-w-xs"
-        id="zip-code-input"
-        placeholder="Enter zip code"
-        type="text"
-        bind:value={zipCode}
-        onchange={() => {
-          if (zipCode.length === 5) queryDogsByLocation();
-        }}
-      />
+      <div class="flex flex-col">
+        <Input
+          class="max-w-xs"
+          id="zip-code-input"
+          placeholder="Enter zip code"
+          type="text"
+          bind:value={zipCode}
+          oninput={() => {
+            if (isValidZipCode) queryDogsByLocation();
+          }}
+        />
+        {#if zipCode && !isValidZipCode}
+          <em class="text-xs text-destructive ml-1 mt-1">Invalid Zip Code</em>
+        {/if}
+      </div>
     </div>
   </div>
 
