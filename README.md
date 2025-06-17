@@ -8,6 +8,6 @@ Once you've cloned this project and installed dependencies with `npm install` (o
 
 ```bash
 npm run dev
-```.
+```
 
 Once it's running, open your browser and head to: `http://localhost:5173`.
