@@ -19,6 +19,7 @@
   import type { ICellRendererParams, SortDirection } from 'ag-grid-community';
   import { onMount } from 'svelte';
 
+  const SEARCH_RADIUS = '25';
   const AGE_MIN = 0;
   const AGE_MAX = 20;
   const PAGE_SIZE = 25;
@@ -81,7 +82,7 @@
   let dogs = $state<Dog[]>([]);
   let isLoading = $state<boolean>(false);
   let page = $state<number>(1);
-  let searchRadius = $state<string>('25');
+  let searchRadius = $state<string>(SEARCH_RADIUS);
   let selectedBreeds = $state<string[]>([]);
   let zipCode = $state<string>('');
 
@@ -195,7 +196,7 @@
   </div>
 </div>
 
-<div class="toolbar flex mb-4 items-start flex-wrap gap-4">
+<div class="toolbar flex mb-4 items-end flex-wrap gap-4">
   <div class="flex flex-col gap-1">
     <label class="text-xs" for="breed-type-multi-select">Breed Type</label>
 
@@ -248,7 +249,7 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="text-xs" for="search-radius-toggle-group"> Search Radius </label>
+      <label class="text-xs" for="search-radius-toggle-group">Search Radius</label>
       <ToggleGroup.Root
         id="search-toggle-group"
         type="single"
@@ -276,10 +277,10 @@
       Age ({ageRange[0]} - {ageRange[1]})
     </label>
 
-    <div class="flex gap-2 mt-2">
+    <div class="flex gap-2 h-9 items-center">
       <span class="text-sm">{AGE_MIN}</span>
       <Slider
-        class="w-[160px]"
+        class="w-[140px]"
         id="age-dual-slider"
         max={AGE_MAX}
         step={1}
@@ -293,6 +294,20 @@
       <span class="text-sm">{AGE_MAX}</span>
     </div>
   </div>
+
+  <Button
+    variant="destructive"
+    onclick={() => {
+      selectedBreeds = [];
+      zipCode = '';
+      searchRadius = SEARCH_RADIUS;
+      ageRange = [AGE_MIN, AGE_MAX];
+      const params = generateQueryParams();
+      queryDogs(params);
+    }}
+  >
+    Clear
+  </Button>
 </div>
 
 <AgTable
