@@ -13,6 +13,7 @@
   import * as Pagination from '$lib/components/ui/pagination';
   import * as Select from '$lib/components/ui/select';
   import { Slider } from '$lib/components/ui/slider';
+  import * as ToggleGroup from '$lib/components/ui/toggle-group/';
   import { store } from '$lib/stores/app.svelte';
   import type { Dog, Location } from '$lib/types';
   import type { ICellRendererParams, SortDirection } from 'ag-grid-community';
@@ -80,6 +81,7 @@
   let dogs = $state<Dog[]>([]);
   let isLoading = $state<boolean>(false);
   let page = $state<number>(1);
+  let searchRadius = $state<string>('25');
   let selectedBreeds = $state<string[]>([]);
   let zipCode = $state<string>('');
 
@@ -142,7 +144,7 @@
   }
 
   function generateLocationBody({ latitude, longitude }: Location) {
-    const radiusInMiles = 25;
+    const radiusInMiles = Number(searchRadius);
     const milesPerDegreeLat = 69;
     const milesPerDegreeLon = 69 * Math.cos(latitude * (Math.PI / 180));
     const deltaLat = radiusInMiles / milesPerDegreeLat;
@@ -193,7 +195,7 @@
   </div>
 </div>
 
-<div class="toolbar flex mb-4 items-start flex-wrap gap-3">
+<div class="toolbar flex mb-4 items-start flex-wrap gap-4">
   <div class="flex flex-col gap-1">
     <label class="text-xs" for="breed-type-multi-select">Breed Type</label>
 
@@ -227,25 +229,45 @@
     </Select.Root>
   </div>
 
-  <div class="flex flex-col gap-1">
-    <label class="text-xs" for="zip-code-input">Location</label>
+  <div class="flex gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-xs" for="zip-code-input">Zip Code</label>
+      <Input
+        class="max-w-xs"
+        id="zip-code-input"
+        placeholder="Enter zip code"
+        type="text"
+        bind:value={zipCode}
+        oninput={() => {
+          if (isValidZipCode) queryDogsByLocation();
+        }}
+      />
+      {#if zipCode && !isValidZipCode}
+        <em class="text-xs text-destructive ml-1 mt-1">Invalid Zip Code</em>
+      {/if}
+    </div>
 
-    <div class="flex">
-      <div class="flex flex-col">
-        <Input
-          class="max-w-xs"
-          id="zip-code-input"
-          placeholder="Enter zip code"
-          type="text"
-          bind:value={zipCode}
-          oninput={() => {
-            if (isValidZipCode) queryDogsByLocation();
-          }}
-        />
-        {#if zipCode && !isValidZipCode}
-          <em class="text-xs text-destructive ml-1 mt-1">Invalid Zip Code</em>
-        {/if}
-      </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-xs" for="search-radius-toggle-group"> Search Radius </label>
+      <ToggleGroup.Root
+        id="search-toggle-group"
+        type="single"
+        bind:value={searchRadius}
+        variant="outline"
+        onValueChange={() => {
+          if (isValidZipCode) queryDogsByLocation();
+        }}
+      >
+        <ToggleGroup.Item class={searchRadius === '10' ? 'pointer-events-none' : ''} value="10">
+          10 mi
+        </ToggleGroup.Item>
+        <ToggleGroup.Item class={searchRadius === '25' ? 'pointer-events-none' : ''} value="25">
+          25 mi
+        </ToggleGroup.Item>
+        <ToggleGroup.Item class={searchRadius === '50' ? 'pointer-events-none' : ''} value="50">
+          50 mi
+        </ToggleGroup.Item>
+      </ToggleGroup.Root>
     </div>
   </div>
 
