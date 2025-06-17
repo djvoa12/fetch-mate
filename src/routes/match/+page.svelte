@@ -1,24 +1,25 @@
 <script lang="ts">
   import { getDogs, matchDog } from '$lib/api';
   import Loader from '$lib/components/Loader/Loader.svelte';
+  import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
-  import type { Dog } from '$lib/types';
   import { store } from '$lib/stores/app.svelte';
   import { onMount } from 'svelte';
 
-  let isLoading = $state<boolean>(true);
-  let matchedDog = $state<Dog | null>(null);
+  let isLoading = $state<boolean>(false);
 
   onMount(() => {
-    findMyMate();
+    if (!store.matchedDog) findMyMate();
   });
 
   async function findMyMate() {
+    isLoading = true;
+
     try {
       const dogIds = store.favoriteDogIds;
       const matchedDogId = await matchDog([...dogIds]);
       const matchedDogs = await getDogs([matchedDogId]);
-      matchedDog = matchedDogs[0];
+      store.matchedDog = matchedDogs[0];
     } catch (e) {
       console.error(e);
     } finally {
@@ -27,25 +28,29 @@
   }
 </script>
 
-{#if matchedDog}
-  <h1 class="text-center mb-4">
-    You've been matched!
-    <span class="material-icons relative top-[5px] orange">pets</span>
-  </h1>
-{/if}
-
-<Card.Root class="w-fit m-auto min-w-[350px] min-h-[350px]">
-  {#if isLoading}
-    <Loader />
-  {:else if matchedDog}
-    <Card.Header>
-      <Card.Title>{matchedDog.name}</Card.Title>
-      <Card.Description>{matchedDog.breed}</Card.Description>
-    </Card.Header>
-    <Card.Content class="flex flex-col gap-2">
-      <img src={matchedDog.img} alt="dog profile" />
-      <p class="text-sm">Age: {matchedDog.age}</p>
-      <p class="text-sm">Zip Code: {matchedDog.zip_code}</p>
-    </Card.Content>
+<div class="flex flex-col">
+  {#if store.matchedDog}
+    <h1 class="text-center mb-4">
+      You've been matched!
+      <span class="material-icons relative top-[5px] orange">pets</span>
+    </h1>
   {/if}
-</Card.Root>
+
+  <Card.Root class="w-fit m-auto min-w-[350px] min-h-[350px]">
+    {#if isLoading}
+      <Loader />
+    {:else if store.matchedDog}
+      <Card.Header>
+        <Card.Title>{store.matchedDog.name}</Card.Title>
+        <Card.Description>{store.matchedDog.breed}</Card.Description>
+      </Card.Header>
+      <Card.Content class="flex flex-col gap-2">
+        <img src={store.matchedDog.img} alt="dog profile" />
+        <p class="text-sm">Age: {store.matchedDog.age}</p>
+        <p class="text-sm">Zip Code: {store.matchedDog.zip_code}</p>
+      </Card.Content>
+    {/if}
+  </Card.Root>
+
+  <Button class="m-auto mt-4" disabled={isLoading} onclick={findMyMate}>Fetch Another!</Button>
+</div>
