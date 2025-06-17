@@ -191,8 +191,10 @@
   </div>
 </div>
 
-<div class="toolbar flex mb-4 justify-between flex-wrap">
-  <div class="flex items-center gap-4">
+<div class="toolbar flex mb-4 items-start flex-wrap gap-3">
+  <div class="flex flex-col gap-1">
+    <label class="text-xs" for="breed-type-multi-select">Breed Type</label>
+
     <Select.Root
       type="multiple"
       bind:value={selectedBreeds}
@@ -201,7 +203,7 @@
         queryDogs(params);
       }}
     >
-      <Select.Trigger class="w-[190px]">
+      <Select.Trigger class="w-[190px]" id="breeds-multi-select">
         <div class="flex items-center">
           <Select.SelectionPill
             count={selectedBreeds.length}
@@ -211,7 +213,7 @@
               queryDogs(params);
             }}
           />
-          Breeds
+          Select breeds
         </div>
       </Select.Trigger>
 
@@ -221,11 +223,16 @@
         {/each}
       </Select.Content>
     </Select.Root>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="text-xs" for="zip-code-input">Location</label>
 
     <div class="flex">
       <Input
         class="max-w-xs"
-        placeholder="Enter Zip Code"
+        id="zip-code-input"
+        placeholder="Enter zip code"
         type="text"
         bind:value={zipCode}
         onchange={() => {
@@ -233,24 +240,28 @@
         }}
       />
     </div>
+  </div>
 
-    <div class="flex flex-col">
-      <label class="text-xs" for="dual-slider">Age Filter: {ageRange[0]} - {ageRange[1]}</label>
-      <div class="flex gap-2 mt-1" id="dual-slider">
-        <span class="text-sm">{AGE_MIN}</span>
-        <Slider
-          class="w-[180px]"
-          max={AGE_MAX}
-          step={1}
-          type="multiple"
-          bind:value={ageRange}
-          onValueCommit={() => {
-            const params = generateQueryParams();
-            queryDogs(params);
-          }}
-        />
-        <span class="text-sm">{AGE_MAX}</span>
-      </div>
+  <div class="flex flex-col gap-1">
+    <label class="text-xs" for="age-dual-slider">
+      Age ({ageRange[0]} - {ageRange[1]})
+    </label>
+
+    <div class="flex gap-2 mt-2">
+      <span class="text-sm">{AGE_MIN}</span>
+      <Slider
+        class="w-[160px]"
+        id="age-dual-slider"
+        max={AGE_MAX}
+        step={1}
+        type="multiple"
+        bind:value={ageRange}
+        onValueCommit={() => {
+          const params = generateQueryParams();
+          queryDogs(params);
+        }}
+      />
+      <span class="text-sm">{AGE_MAX}</span>
     </div>
   </div>
 </div>
