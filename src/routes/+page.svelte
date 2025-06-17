@@ -207,7 +207,7 @@
         queryDogs(params);
       }}
     >
-      <Select.Trigger class="w-[190px]" id="breeds-multi-select">
+      <Select.Trigger class="w-[150px]" id="breeds-multi-select">
         <div class="flex items-center">
           <Select.SelectionPill
             count={selectedBreeds.length}
@@ -217,7 +217,7 @@
               queryDogs(params);
             }}
           />
-          Select breeds
+          {selectedBreeds.length ? 'Breeds' : 'Select breeds'}
         </div>
       </Select.Trigger>
 
@@ -233,7 +233,7 @@
     <div class="flex flex-col gap-1">
       <label class="text-xs" for="zip-code-input">Zip Code</label>
       <Input
-        class="w-[190px]"
+        class="w-[150px]"
         id="zip-code-input"
         placeholder="Enter zip code"
         type="text"
@@ -243,7 +243,7 @@
         }}
       />
       {#if zipCode && !isValidZipCode}
-        <em class="text-xs text-destructive ml-1 mt-1">Invalid Zip Code</em>
+        <em class="text-xs text-destructive ml-1">Invalid Zip Code</em>
       {/if}
     </div>
 
