@@ -1,13 +1,20 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { getAllBreeds, getDogs, queryDogIds } from '$lib/api';
+  import {
+    getAllBreeds,
+    getDogs,
+    queryDogIds,
+    queryLocations,
+    queryLocationsByZipCodes
+  } from '$lib/api';
   import AgTable from '$lib/components/Table/AgTable.svelte';
   import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   import * as Pagination from '$lib/components/ui/pagination';
   import * as Select from '$lib/components/ui/select';
   import { Slider } from '$lib/components/ui/slider';
   import { store } from '$lib/stores/app.svelte';
-  import type { Dog } from '$lib/types';
+  import type { Dog, Location } from '$lib/types';
   import type { ICellRendererParams, SortDirection } from 'ag-grid-community';
   import { onMount } from 'svelte';
 
@@ -65,6 +72,7 @@
   ];
 
   let sort: string = 'breed:asc';
+  let zipCodes: string[] = [];
 
   let ageRange = $state<[number, number]>([AGE_MIN, AGE_MAX]);
   let breeds = $state<string[]>([]);
@@ -73,6 +81,7 @@
   let isLoading = $state<boolean>(false);
   let page = $state<number>(1);
   let selectedBreeds = $state<string[]>([]);
+  let zipCode = $state<string>('');
 
   onMount(() => {
     fetchAllBreeds();
@@ -94,7 +103,6 @@
       const { resultIds, total } = await queryDogIds(queryParams);
       count = total;
       const fetchedDogs = await getDogs(resultIds);
-
       dogs = fetchedDogs.map((dog) => ({
         ...dog,
         checked: store.favoriteDogIds.has(dog.id)
@@ -112,7 +120,8 @@
       ageMin: ageRange[0],
       breeds: selectedBreeds,
       from: (page - 1) * PAGE_SIZE,
-      sort
+      sort,
+      zipCodes
     };
   }
 
@@ -129,12 +138,58 @@
     const newFavorites = [...keptDogs, ...selectedDogs];
     store.favoriteDogs = newFavorites;
   }
+
+  function generateLocationBody({ latitude, longitude }: Location) {
+    const radiusInMiles = 25;
+    const milesPerDegreeLat = 69;
+    const milesPerDegreeLon = 69 * Math.cos(latitude * (Math.PI / 180));
+    const deltaLat = radiusInMiles / milesPerDegreeLat;
+    const deltaLon = radiusInMiles / milesPerDegreeLon;
+    const geoBoundingBox = {
+      top: latitude + deltaLat,
+      bottom: latitude - deltaLat,
+      left: longitude - deltaLon,
+      right: longitude + deltaLon
+    };
+    return { geoBoundingBox, size: 10000 };
+  }
+
+  async function queryDogsByLocation() {
+    isLoading = true;
+
+    try {
+      const [location] = await queryLocationsByZipCodes([zipCode]);
+
+      if (location) {
+        const body = generateLocationBody(location);
+        const locations = await queryLocations(body);
+        zipCodes = locations.map((r) => r.zip_code);
+        const params = generateQueryParams();
+        queryDogs(params);
+      } else {
+        dogs = [];
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      isLoading = false;
+    }
+  }
 </script>
 
-<h1 class="mb-2">
-  <span class="orange">Step 1:</span>
-  Select your favorites wagsters!
-</h1>
+<div class="flex justify-between mb-4 border-b pb-2 items-center">
+  <h1 class="mb-2">
+    <span class="orange">Step 1:</span>
+    Select your favorites wagsters!
+  </h1>
+
+  <div class="flex gap-4 items-center">
+    {#if store.favoriteDogs.length}
+      <span>{store.favoriteDogs.length} selected</span>
+    {/if}
+    <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/favorites')}>Next</Button>
+  </div>
+</div>
 
 <div class="toolbar flex mb-4 justify-between flex-wrap">
   <div class="flex items-center gap-4">
@@ -156,7 +211,7 @@
               queryDogs(params);
             }}
           />
-          Breed Filter
+          Breeds
         </div>
       </Select.Trigger>
 
@@ -166,6 +221,18 @@
         {/each}
       </Select.Content>
     </Select.Root>
+
+    <div class="flex">
+      <Input
+        class="max-w-xs"
+        placeholder="Enter Zip Code"
+        type="text"
+        bind:value={zipCode}
+        onchange={() => {
+          if (zipCode.length === 5) queryDogsByLocation();
+        }}
+      />
+    </div>
 
     <div class="flex flex-col">
       <label class="text-xs" for="dual-slider">Age Filter: {ageRange[0]} - {ageRange[1]}</label>
@@ -185,13 +252,6 @@
         <span class="text-sm">{AGE_MAX}</span>
       </div>
     </div>
-  </div>
-
-  <div class="flex gap-4 items-center">
-    {#if store.favoriteDogs.length}
-      <span>{store.favoriteDogs.length} selected</span>
-    {/if}
-    <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/favorites')}>Next</Button>
   </div>
 </div>
 
