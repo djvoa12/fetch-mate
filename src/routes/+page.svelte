@@ -181,13 +181,13 @@
   }
 </script>
 
-<div class="flex justify-between mb-4 border-b pb-2 items-center">
-  <h1 class="mb-2">
+<div class="flex justify-between mb-4 border-b pb-2 items-center flex-wrap gap-2">
+  <h1 class="mr-4">
     <span class="orange">Step 1:</span>
     Select your favorites wagsters!
   </h1>
 
-  <div class="flex gap-4 items-center">
+  <div class="flex gap-3 items-center">
     {#if store.favoriteDogs.length}
       <span>{store.favoriteDogs.length} selected</span>
     {/if}
@@ -229,11 +229,11 @@
     </Select.Root>
   </div>
 
-  <div class="flex gap-4">
+  <div class="flex gap-4 flex-wrap">
     <div class="flex flex-col gap-1">
       <label class="text-xs" for="zip-code-input">Zip Code</label>
       <Input
-        class="max-w-xs"
+        class="w-[190px]"
         id="zip-code-input"
         placeholder="Enter zip code"
         type="text"

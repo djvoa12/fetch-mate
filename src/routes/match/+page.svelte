@@ -34,7 +34,7 @@
   </h1>
 {/if}
 
-<Card.Root class="w-fit m-auto min-w-[350px] min-h-[500px]">
+<Card.Root class="w-fit m-auto min-w-[350px] min-h-[350px]">
   {#if isLoading}
     <Loader />
   {:else if matchedDog}

@@ -64,10 +64,12 @@
   };
 </script>
 
-<h1 class="mb-2">
-  <span class="orange">Step 2:</span>
-  Review your pups and fetch!
-</h1>
+<div class="border-b mb-4">
+  <h1 class="mb-2">
+    <span class="orange">Step 2:</span>
+    Review your pups and fetch!
+  </h1>
+</div>
 
 <div class="toolbar flex mb-4 justify-between flex-wrap">
   <Button variant="link" onclick={() => goto('/')}>
