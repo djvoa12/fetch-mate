@@ -245,6 +245,7 @@
         {/if}
       </div>
       <Input
+        autocomplete="off"
         class="w-[150px]"
         id="zip-code-input"
         placeholder="Enter zip code"
