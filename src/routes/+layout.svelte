@@ -49,11 +49,11 @@
       <span class="material-icons !text-3xl relative top-[2px]">pets</span>
     </h1>
 
-    <Input class="max-w-xs" placeholder="Email" type="email" bind:value={email} />
-
-    <Input class="max-w-xs" placeholder="Name" type="text" bind:value={name} />
-
-    <Button disabled={isAuthenticating} onclick={logIn}>Log In</Button>
+    <form class="flex flex-col gap-3 w-[260px] items-center" onsubmit={logIn}>
+      <Input placeholder="Email" type="email" bind:value={email} />
+      <Input placeholder="Name" type="text" bind:value={name} />
+      <Button class="w-fit" disabled={isAuthenticating} type="submit">Log In</Button>
+    </form>
   </div>
 {:else}
   <div class="h-screen flex items-center justify-center">
