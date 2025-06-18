@@ -12,4 +12,4 @@ npm run dev
 
 Once it's running, open your browser and head to: `http://localhost:5173`.
 
-If you are using Safari, you uncheck `Prevent cross-site tracking` under **Preferences > Privacy**.
+If you are using Safari, you can uncheck `Prevent cross-site tracking` under **Preferences > Privacy**.
