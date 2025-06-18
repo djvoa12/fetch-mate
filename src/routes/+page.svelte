@@ -19,7 +19,7 @@
   import type { ICellRendererParams, SortDirection } from 'ag-grid-community';
   import { onMount } from 'svelte';
 
-  const SEARCH_RADIUS = '25';
+  const SEARCH_RADIUS = '10';
   const AGE_MIN = 0;
   const AGE_MAX = 20;
   const PAGE_SIZE = 25;
@@ -275,14 +275,14 @@
           }
         }}
       >
+        <ToggleGroup.Item class={searchRadius === '5' ? 'pointer-events-none' : ''} value="5">
+          5 mi
+        </ToggleGroup.Item>
         <ToggleGroup.Item class={searchRadius === '10' ? 'pointer-events-none' : ''} value="10">
           10 mi
         </ToggleGroup.Item>
         <ToggleGroup.Item class={searchRadius === '25' ? 'pointer-events-none' : ''} value="25">
           25 mi
-        </ToggleGroup.Item>
-        <ToggleGroup.Item class={searchRadius === '50' ? 'pointer-events-none' : ''} value="50">
-          50 mi
         </ToggleGroup.Item>
       </ToggleGroup.Root>
     </div>
