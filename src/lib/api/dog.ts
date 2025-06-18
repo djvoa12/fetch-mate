@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { persistAuth } from '$lib/authentication';
 import { store } from '$lib/stores/app.svelte';
 import type { Dog, QueryResult } from '$lib/types';
 import axios from 'axios';
@@ -30,6 +31,8 @@ export const queryDogIds = async (
   } catch (e: unknown) {
     if (axios.isAxiosError(e)) {
       store.isAuthenticated = false;
+      store.showSplashPage = true;
+      persistAuth(false);
       goto('/');
     } else {
       console.error(e);

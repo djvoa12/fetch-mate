@@ -1,7 +1,8 @@
 <script lang="ts">
   import '../app.css';
-  import { signIn } from '$lib/authentication';
+  import { validateAuth, signIn } from '$lib/authentication';
   import Header from '$lib/components/Layout/Header.svelte';
+  import Loader from '$lib/components/Loader/Loader.svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { store } from '$lib/stores/app.svelte';
@@ -16,6 +17,8 @@
   let name = $state<string>('');
 
   onMount(() => {
+    store.isAuthenticated = validateAuth();
+    store.showSplashPage = !store.isAuthenticated;
     setTheme();
   });
 
@@ -39,7 +42,7 @@
       {@render children()}
     </main>
   </div>
-{:else}
+{:else if store.showSplashPage}
   <div class="splash-page flex flex-col items-center gap-3 min-h-screen justify-center">
     <h1 class="text-4xl">
       Fetch Mate
@@ -51,5 +54,9 @@
     <Input class="max-w-xs" placeholder="Name" type="text" bind:value={name} />
 
     <Button disabled={isAuthenticating} onclick={logIn}>Log In</Button>
+  </div>
+{:else}
+  <div class="h-screen flex items-center justify-center">
+    <Loader />
   </div>
 {/if}
