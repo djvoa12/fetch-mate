@@ -40,7 +40,6 @@
       },
       onSortChanged: (e) => {
         if (onSort) {
-          gridApi!.setGridOption('rowData', []);
           const sortColumn = (e.columns as AgColumn[]).find(
             (c) => c.sort !== undefined
           ) as AgColumn;

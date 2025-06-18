@@ -33,7 +33,8 @@
       checkboxSelection: true,
       headerName: '',
       maxWidth: 50,
-      minWidth: 50
+      minWidth: 50,
+      sortable: false
     },
     {
       autoHeight: true,
@@ -47,18 +48,21 @@
       sortable: false
     },
     {
+      comparator: () => 0, // Prevents FE sorting
       field: 'name',
       flex: 1,
       headerName: 'Name',
       minWidth: 120
     },
     {
+      comparator: () => 0, // Prevents FE sorting
       field: 'breed',
       flex: 1,
       headerName: 'Breed',
       minWidth: 235
     },
     {
+      comparator: () => 0, // Prevents FE sorting
       field: 'age',
       flex: 1,
       headerName: 'Age',
