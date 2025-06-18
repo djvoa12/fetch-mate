@@ -60,12 +60,14 @@
     }
   ];
 
-  window.removeFavDog = (dogId: string) => {
-    store.favoriteDogs = store.favoriteDogs.filter((d) => d.id !== dogId);
-  };
-
   onMount(() => {
-    if (!store.favoriteDogs.length) goto('/');
+    if (store.favoriteDogs.length) {
+      window.removeFavDog = (dogId: string) => {
+        store.favoriteDogs = store.favoriteDogs.filter((d) => d.id !== dogId);
+      };
+    } else {
+      goto('/');
+    }
   });
 </script>
 
