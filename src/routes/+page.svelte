@@ -180,6 +180,10 @@
       isLoading = false;
     }
   }
+
+  function resetPage() {
+    page = 1;
+  }
 </script>
 
 <div class="flex justify-between mb-4 border-b pb-2 items-center flex-wrap gap-2">
@@ -204,6 +208,7 @@
       type="multiple"
       bind:value={selectedBreeds}
       onValueChange={() => {
+        resetPage();
         const params = generateQueryParams();
         queryDogs(params);
       }}
@@ -214,6 +219,7 @@
             count={selectedBreeds.length}
             onClear={() => {
               selectedBreeds = [];
+              resetPage();
               const params = generateQueryParams();
               queryDogs(params);
             }}
@@ -246,9 +252,11 @@
         bind:value={zipCode}
         oninput={() => {
           if (isValidZipCode) {
+            resetPage();
             queryDogsByLocation();
           } else if (zipCode === '') {
             zipCodes = [];
+            resetPage();
             const params = generateQueryParams();
             queryDogs(params);
           }
@@ -264,7 +272,10 @@
         bind:value={searchRadius}
         variant="outline"
         onValueChange={() => {
-          if (isValidZipCode) queryDogsByLocation();
+          if (isValidZipCode) {
+            resetPage();
+            queryDogsByLocation();
+          }
         }}
       >
         <ToggleGroup.Item class={searchRadius === '10' ? 'pointer-events-none' : ''} value="10">
@@ -295,6 +306,7 @@
         type="multiple"
         bind:value={ageRange}
         onValueCommit={() => {
+          resetPage();
           const params = generateQueryParams();
           queryDogs(params);
         }}
@@ -308,8 +320,10 @@
     onclick={() => {
       selectedBreeds = [];
       zipCode = '';
+      zipCodes= [];
       searchRadius = SEARCH_RADIUS;
       ageRange = [AGE_MIN, AGE_MAX];
+      resetPage();
       const params = generateQueryParams();
       queryDogs(params);
     }}
