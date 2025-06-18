@@ -320,7 +320,7 @@
     onclick={() => {
       selectedBreeds = [];
       zipCode = '';
-      zipCodes= [];
+      zipCodes = [];
       searchRadius = SEARCH_RADIUS;
       ageRange = [AGE_MIN, AGE_MAX];
       resetPage();

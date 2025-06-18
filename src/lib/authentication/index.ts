@@ -17,10 +17,7 @@ export async function signOut() {
 }
 
 export function persistAuth(isAuthenticated: boolean) {
-  localStorage.setItem(
-    AUTH_CACHE_KEY,
-    JSON.stringify({ isAuthenticated, timestamp: Date.now() })
-  );
+  localStorage.setItem(AUTH_CACHE_KEY, JSON.stringify({ isAuthenticated, timestamp: Date.now() }));
 }
 
 // Enhancement: Add logic for time expiration
