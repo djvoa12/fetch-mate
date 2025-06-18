@@ -1,32 +1,20 @@
 <script lang="ts">
   import '../app.css';
-  import { validateAuth, signIn } from '$lib/authentication';
+  import { validateAuth } from '$lib/authentication';
   import Header from '$lib/components/Layout/Header.svelte';
   import Loader from '$lib/components/Loader/Loader.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import LoginForm from '$lib/components/Login/LoginForm.svelte';
   import { store } from '$lib/stores/app.svelte';
   import { setTheme } from '$lib/utils';
   import { onMount } from 'svelte';
 
   let { children } = $props();
 
-  let isAuthenticating = $state<boolean>(false);
-
-  let email = $state<string>('');
-  let name = $state<string>('');
-
   onMount(() => {
     store.isAuthenticated = validateAuth();
     store.showSplashPage = !store.isAuthenticated;
     setTheme();
   });
-
-  async function logIn() {
-    isAuthenticating = true;
-    await signIn({ email, name });
-    isAuthenticating = false;
-  }
 </script>
 
 <svelte:head>
@@ -43,18 +31,7 @@
     </main>
   </div>
 {:else if store.showSplashPage}
-  <div class="splash-page flex flex-col items-center gap-3 min-h-screen justify-center">
-    <h1 class="text-4xl">
-      Fetch Mate
-      <span class="material-icons !text-3xl relative top-[2px]">pets</span>
-    </h1>
-
-    <form class="flex flex-col gap-3 w-[260px] items-center" onsubmit={logIn}>
-      <Input placeholder="Email" type="email" bind:value={email} />
-      <Input placeholder="Name" type="text" bind:value={name} />
-      <Button class="w-fit" disabled={isAuthenticating} type="submit">Log In</Button>
-    </form>
-  </div>
+  <LoginForm />
 {:else}
   <div class="h-screen flex items-center justify-center">
     <Loader />
