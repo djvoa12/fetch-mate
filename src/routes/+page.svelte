@@ -332,10 +332,13 @@
   </Button>
 </div>
 
-<span class="text-xs">
-  {Intl.NumberFormat('en-US').format(count)}
-  {count === 1 ? 'dog' : 'dogs'} found
-</span>
+<div class="flex justify-between mb-1">
+  <span class="text-xs">
+    {Intl.NumberFormat('en-US').format(count)}
+    {count === 1 ? 'dog' : 'dogs'} found
+  </span>
+  <span class="text-xs">Current Page: {page}</span>
+</div>
 
 <AgTable
   class="w-full mb-4"
