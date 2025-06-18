@@ -1,6 +1,5 @@
 <script lang="ts">
   import '../app.css';
-  import { goto } from '$app/navigation';
   import { signIn } from '$lib/authentication';
   import Header from '$lib/components/Layout/Header.svelte';
   import { Button } from '$lib/components/ui/button';
@@ -23,7 +22,6 @@
   async function logIn() {
     isAuthenticating = true;
     await signIn({ email, name });
-    goto('/');
     isAuthenticating = false;
   }
 </script>

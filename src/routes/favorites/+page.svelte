@@ -4,6 +4,7 @@
   import { Button } from '$lib/components/ui/button';
   import { store } from '$lib/stores/app.svelte';
   import type { ICellRendererParams } from 'ag-grid-community';
+  import { onMount } from 'svelte';
 
   const COL_DEFS = [
     {
@@ -62,6 +63,10 @@
   window.removeFavDog = (dogId: string) => {
     store.favoriteDogs = store.favoriteDogs.filter((d) => d.id !== dogId);
   };
+
+  onMount(() => {
+    if (!store.favoriteDogs.length) goto('/');
+  });
 </script>
 
 <div class="border-b mb-4">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { getDogs, matchDog } from '$lib/api';
   import Loader from '$lib/components/Loader/Loader.svelte';
   import { Button } from '$lib/components/ui/button';
@@ -9,7 +10,11 @@
   let isLoading = $state<boolean>(false);
 
   onMount(() => {
-    if (!store.matchedDog) findMyMate();
+    if (!store.favoriteDogs.length) {
+      goto('/');
+    } else if (!store.matchedDog) {
+      findMyMate();
+    }
   });
 
   async function findMyMate() {
