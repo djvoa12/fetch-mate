@@ -90,7 +90,7 @@
 
   onMount(() => {
     fetchAllBreeds();
-    queryDogs({ sort });
+    queryDogs();
   });
 
   async function fetchAllBreeds() {
@@ -98,24 +98,6 @@
       breeds = await getAllBreeds();
     } catch (e) {
       console.error(e);
-    }
-  }
-
-  async function queryDogs(queryParams: Record<string, string | number | string[]>) {
-    isLoading = true;
-
-    try {
-      const { resultIds, total } = await queryDogIds(queryParams);
-      count = total;
-      const fetchedDogs = await getDogs(resultIds);
-      dogs = fetchedDogs.map((dog) => ({
-        ...dog,
-        checked: store.favoriteDogIds.has(dog.id)
-      }));
-    } catch (e) {
-      console.error(e);
-    } finally {
-      isLoading = false;
     }
   }
 
@@ -132,8 +114,7 @@
 
   function sortDogs(colId: string, direction: SortDirection) {
     sort = direction === null ? 'breed:asc' : `${colId}:${direction}`;
-    const params = generateQueryParams();
-    queryDogs(params);
+    queryDogs();
   }
 
   function selectDogs(selectedDogs: Dog[]) {
@@ -159,6 +140,25 @@
     return { geoBoundingBox, size: 10000 };
   }
 
+  async function queryDogs() {
+    isLoading = true;
+
+    try {
+      const params = generateQueryParams();
+      const { resultIds, total } = await queryDogIds(params);
+      count = total;
+      const fetchedDogs = await getDogs(resultIds);
+      dogs = fetchedDogs.map((dog) => ({
+        ...dog,
+        checked: store.favoriteDogIds.has(dog.id)
+      }));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      isLoading = false;
+    }
+  }
+
   async function queryDogsByLocation() {
     isLoading = true;
 
@@ -169,8 +169,7 @@
         const body = generateLocationBody(location);
         const locations = await queryLocations(body);
         zipCodes = locations.map((r) => r.zip_code);
-        const params = generateQueryParams();
-        queryDogs(params);
+        queryDogs();
       } else {
         dogs = [];
       }
@@ -209,8 +208,7 @@
       bind:value={selectedBreeds}
       onValueChange={() => {
         resetPage();
-        const params = generateQueryParams();
-        queryDogs(params);
+        queryDogs();
       }}
     >
       <Select.Trigger class="w-[150px]" id="breeds-multi-select">
@@ -220,8 +218,7 @@
             onClear={() => {
               selectedBreeds = [];
               resetPage();
-              const params = generateQueryParams();
-              queryDogs(params);
+              queryDogs();
             }}
           />
           {selectedBreeds.length ? 'Breeds' : 'Select breeds'}
@@ -258,8 +255,7 @@
           } else if (zipCode === '') {
             zipCodes = [];
             resetPage();
-            const params = generateQueryParams();
-            queryDogs(params);
+            queryDogs();
           }
         }}
       />
@@ -308,8 +304,7 @@
         bind:value={ageRange}
         onValueCommit={() => {
           resetPage();
-          const params = generateQueryParams();
-          queryDogs(params);
+          queryDogs();
         }}
       />
       <span class="text-sm">{AGE_MAX}</span>
@@ -325,8 +320,7 @@
       searchRadius = SEARCH_RADIUS;
       ageRange = [AGE_MIN, AGE_MAX];
       resetPage();
-      const params = generateQueryParams();
-      queryDogs(params);
+      queryDogs();
     }}
   >
     Clear
@@ -356,8 +350,7 @@
   perPage={PAGE_SIZE}
   onPageChange={() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    const params = generateQueryParams();
-    queryDogs(params);
+    queryDogs();
   }}
 >
   {#snippet children({ pages, currentPage })}
