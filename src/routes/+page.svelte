@@ -196,7 +196,7 @@
   </div>
 </div>
 
-<div class="toolbar flex mb-4 items-end flex-wrap gap-4">
+<div class="toolbar flex mb-3 items-end flex-wrap gap-4">
   <div class="flex flex-col gap-1">
     <label class="text-xs" for="breed-type-multi-select">Breed Type</label>
 
@@ -232,7 +232,12 @@
 
   <div class="flex gap-4 flex-wrap">
     <div class="flex flex-col gap-1">
-      <label class="text-xs" for="zip-code-input">Zip Code</label>
+      <div class="flex">
+        <label class="text-xs" for="zip-code-input">Zip Code</label>
+        {#if zipCode && !isValidZipCode}
+          <em class="text-xs text-destructive ml-1">(Invalid Zip)</em>
+        {/if}
+      </div>
       <Input
         class="w-[150px]"
         id="zip-code-input"
@@ -240,12 +245,15 @@
         type="text"
         bind:value={zipCode}
         oninput={() => {
-          if (isValidZipCode) queryDogsByLocation();
+          if (isValidZipCode) {
+            queryDogsByLocation();
+          } else if (zipCode === '') {
+            zipCodes = [];
+            const params = generateQueryParams();
+            queryDogs(params);
+          }
         }}
       />
-      {#if zipCode && !isValidZipCode}
-        <em class="text-xs text-destructive ml-1">Invalid Zip Code</em>
-      {/if}
     </div>
 
     <div class="flex flex-col gap-1">
