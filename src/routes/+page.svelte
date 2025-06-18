@@ -114,6 +114,7 @@
 
   function sortDogs(colId: string, direction: SortDirection) {
     sort = direction === null ? 'breed:asc' : `${colId}:${direction}`;
+    resetPage();
     queryDogs();
   }
 
