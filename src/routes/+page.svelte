@@ -318,6 +318,11 @@
   </Button>
 </div>
 
+<span class="text-xs">
+  {Intl.NumberFormat('en-US').format(count)}
+  {count === 1 ? 'dog' : 'dogs'} found
+</span>
+
 <AgTable
   class="w-full mb-4"
   columnDefs={COL_DEFS}
