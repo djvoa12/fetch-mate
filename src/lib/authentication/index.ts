@@ -10,10 +10,13 @@ export async function signIn(body: { email: string; name: string }) {
 }
 
 export async function signOut() {
-  await authServiceClient.post('/logout');
-  store.isAuthenticated = false;
-  store.showSplashPage = true;
-  persistAuth(false);
+  try {
+    await authServiceClient.post('/logout');
+  } finally {
+    store.isAuthenticated = false;
+    store.showSplashPage = true;
+    persistAuth(false);
+  }
 }
 
 export function persistAuth(isAuthenticated: boolean) {
