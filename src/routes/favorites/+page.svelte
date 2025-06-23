@@ -71,7 +71,7 @@
   });
 </script>
 
-<div class="favorites flex flex-col max-w-[1000px] m-auto">
+<div class="favorites flex flex-col w-[750px] m-auto h-full">
   <div class="border-b mb-4">
     <h1 class="mb-2">
       <span class="orange">Step 2:</span>
@@ -100,5 +100,7 @@
     </div>
   </div>
 
-  <AgTable class="w-full" columnDefs={COL_DEFS} rowData={store.favoriteDogs} />
+  <div class="flex flex-col flex-1 min-h-[500px]">
+    <AgTable columnDefs={COL_DEFS} rowData={store.favoriteDogs} />
+  </div>
 </div>
