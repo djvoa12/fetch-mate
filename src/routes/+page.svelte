@@ -395,13 +395,21 @@
     </Pagination.Root>
   </div>
 
-  <div class="flex flex-col flex-1 xl:block">
-    <p class="text-xs mb-1">
-      {Intl.NumberFormat('en-US').format(searchLocations.length)}
-      {searchLocations.length === 1 ? 'location' : 'locations'}
-    </p>
+  <div class="flex flex-col flex-1 xl:block xl:max-w-[800px]">
+    <div class="flex justify-between">
+      <span class="text-xs mb-1">
+        {Intl.NumberFormat('en-US').format(searchLocations.length)}
+        {searchLocations.length === 1 ? 'location' : 'locations'}
+      </span>
+
+      <div class="flex items-center text-xs mb-1 gap-1">
+        <span class="material-icons" style="font-size: 14px;">info</span>
+        Map WIP
+      </div>
+    </div>
+
     <Map
-      class="h-[250px] md:h-[500px] xl:max-w-[800px]"
+      class="h-[250px] md:h-[500px]"
       {searchLocations}
       searchRadius={Number(searchRadius)}
       {selectedLocation}
