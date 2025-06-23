@@ -56,11 +56,13 @@
       minWidth: 120
     },
     {
+      autoHeight: true,
+      cellClass: '!whitespace-normal !leading-snug mt-[10px]',
       comparator: () => 0, // Prevents FE sorting
       field: 'breed',
       flex: 1,
       headerName: 'Breed',
-      minWidth: 235
+      minWidth: 180
     },
     {
       comparator: () => 0, // Prevents FE sorting
@@ -339,8 +341,8 @@
   </Button>
 </div>
 
-<div class="flex gap-2 flex-wrap">
-  <div class="flex flex-col w-[900px]">
+<div class="flex flex-col gap-2 flex-wrap xl:flex-row">
+  <div class="flex flex-col xl:w-[800px]">
     <div class="flex justify-between mb-1">
       <span class="text-xs">
         {Intl.NumberFormat('en-US').format(count)}
@@ -393,10 +395,16 @@
     </Pagination.Root>
   </div>
 
-  <Map
-    class="flex-1 mt-5 h-[500px] max-w-[900px]"
-    {searchLocations}
-    searchRadius={Number(searchRadius)}
-    {selectedLocation}
-  />
+  <div class="flex flex-col flex-1 xl:block">
+    <p class="text-xs mb-1">
+      <span class="material-icons relative top-[2px] orange" style="font-size: 12px;">info</span>
+      Note: The map is currently under development.
+    </p>
+    <Map
+      class="h-[500px] max-w-[800px]"
+      {searchLocations}
+      searchRadius={Number(searchRadius)}
+      {selectedLocation}
+    />
+  </div>
 </div>
