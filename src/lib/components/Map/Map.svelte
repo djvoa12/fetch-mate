@@ -96,15 +96,6 @@
     }
   });
 
-  function resetMap() {
-    const source1 = map!.getSource(SOURCE1) as GeoJSONSource;
-    const source2 = map!.getSource(SOURCE2) as GeoJSONSource;
-    const source3 = map!.getSource(SOURCE3) as GeoJSONSource;
-    source1.setData({ type: 'FeatureCollection', features: [] });
-    source2.setData({ type: 'FeatureCollection', features: [] });
-    source3.setData({ type: 'FeatureCollection', features: [] });
-  }
-
   $effect(() => {
     if (isMapLoaded && searchLocations) {
       setSearchRadiusLocationPoints(searchLocations);
@@ -262,6 +253,15 @@
   function onMouseLeaveLocation() {
     map!.getCanvas().style.cursor = '';
     popup.remove();
+  }
+
+  function resetMap() {
+    const source1 = map!.getSource(SOURCE1) as GeoJSONSource;
+    const source2 = map!.getSource(SOURCE2) as GeoJSONSource;
+    const source3 = map!.getSource(SOURCE3) as GeoJSONSource;
+    source1.setData({ type: 'FeatureCollection', features: [] });
+    source2.setData({ type: 'FeatureCollection', features: [] });
+    source3.setData({ type: 'FeatureCollection', features: [] });
   }
 </script>
 
