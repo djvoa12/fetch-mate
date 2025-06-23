@@ -263,7 +263,8 @@
             resetPage();
             queryDogsByLocation();
           } else if (zipCode === '') {
-            zipCodes = [];
+            selectedLocation = null;
+            searchLocations = [];
             resetPage();
             queryDogs();
           }
@@ -326,9 +327,10 @@
     onclick={() => {
       selectedBreeds = [];
       zipCode = '';
-      zipCodes = [];
       searchRadius = SEARCH_RADIUS;
       ageRange = [AGE_MIN, AGE_MAX];
+      selectedLocation = null;
+      searchLocations = [];
       resetPage();
       queryDogs();
     }}

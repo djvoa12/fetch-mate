@@ -77,16 +77,29 @@
   }
 
   $effect(() => {
-    if (isMapLoaded && selectedLocation) {
-      setLocationPoint(selectedLocation);
-      setSearchRadiusCircle(selectedLocation);
-      const zoom = searchRadius === 25 ? 8 : searchRadius === 10 ? 9 : 10;
-      map!.flyTo({
-        center: [selectedLocation.longitude, selectedLocation.latitude],
-        zoom
-      });
+    if (isMapLoaded) {
+      if (selectedLocation) {
+        setLocationPoint(selectedLocation);
+        setSearchRadiusCircle(selectedLocation);
+        const zoom = searchRadius === 25 ? 8 : searchRadius === 10 ? 9 : 10;
+        map!.flyTo({
+          center: [selectedLocation.longitude, selectedLocation.latitude],
+          zoom
+        });
+      } else {
+        resetMap();
+      }
     }
   });
+
+  function resetMap() {
+    const source1 = map!.getSource(SOURCE1) as GeoJSONSource;
+    const source2 = map!.getSource(SOURCE2) as GeoJSONSource;
+    const source3 = map!.getSource(SOURCE3) as GeoJSONSource;
+    source1.setData({ type: 'FeatureCollection', features: [] });
+    source2.setData({ type: 'FeatureCollection', features: [] });
+    source3.setData({ type: 'FeatureCollection', features: [] });
+  }
 
   $effect(() => {
     if (isMapLoaded && searchLocations) {
