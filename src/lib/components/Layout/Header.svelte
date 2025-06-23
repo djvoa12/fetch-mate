@@ -13,7 +13,7 @@
   }
 </script>
 
-<header class="header flex justify-between items-center bg-secondary py-3 px-8">
+<header class="header flex justify-between items-center bg-secondary py-3 px-8 sticky top-0 z-50 shadow w-full">
   <div class="flex gap-6 items-center">
     <h1 class="text-2xl">
       Fetch Mate
