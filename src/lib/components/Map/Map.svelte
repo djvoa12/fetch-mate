@@ -272,10 +272,6 @@
 </div>
 
 <style>
-  :global(.mapboxgl-ctrl-attrib) {
-    font-size: 10px;
-  }
-
   :global(.mapboxgl-popup-content) {
     background: var(--muted);
   }
