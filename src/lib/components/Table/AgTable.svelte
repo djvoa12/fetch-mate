@@ -27,7 +27,6 @@
     class: className = '',
     columnDefs,
     gridOptions = {
-      domLayout: 'autoHeight',
       getRowId: (params) => params.data.id,
       rowSelection: 'multiple',
       suppressRowClickSelection: true,
@@ -74,6 +73,8 @@
 </script>
 
 <div
-  class="table {store.isDarkTheme ? 'ag-theme-alpine-dark' : 'ag-theme-alpine'} {className}"
+  class="table h-full w-full {store.isDarkTheme
+    ? 'ag-theme-alpine-dark'
+    : 'ag-theme-alpine'} {className}"
   bind:this={gridContainer}
 ></div>

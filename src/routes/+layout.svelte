@@ -23,10 +23,10 @@
 </svelte:head>
 
 {#if store.isAuthenticated}
-  <div class="app">
+  <div class="app flex flex-col xl:h-screen">
     <Header />
 
-    <main class="py-4 px-8">
+    <main class="pt-4 px-8 pb-8 flex flex-col h-full">
       {@render children()}
     </main>
   </div>

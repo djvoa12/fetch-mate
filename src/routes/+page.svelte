@@ -341,8 +341,8 @@
   </Button>
 </div>
 
-<div class="flex flex-col gap-4 flex-wrap xl:flex-row">
-  <div class="flex flex-col xl:w-[800px]">
+<div class="flex flex-col gap-4 flex-wrap xl:flex-row flex-1">
+  <div class="flex flex-col xl:w-[750px] h-[500px] xl:h-auto xl:min-h-[500px]">
     <div class="flex justify-between mb-1">
       <span class="text-xs">
         {Intl.NumberFormat('en-US').format(count)}
@@ -352,7 +352,7 @@
     </div>
 
     <AgTable
-      class="w-full mb-4"
+      class="mb-4"
       columnDefs={COL_DEFS}
       {isLoading}
       rowData={dogs}
@@ -401,7 +401,7 @@
       {searchLocations.length === 1 ? 'location' : 'locations'}
     </p>
     <Map
-      class="h-[500px] max-w-[800px]"
+      class="h-[250px] md:h-[500px] xl:max-w-[800px]"
       {searchLocations}
       searchRadius={Number(searchRadius)}
       {selectedLocation}
