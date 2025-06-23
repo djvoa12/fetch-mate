@@ -26,10 +26,12 @@
       sortable: false
     },
     {
+      autoHeight: true,
+      cellClass: '!whitespace-normal !leading-snug mt-[10px]',
       field: 'breed',
       flex: 1,
       headerName: 'Breed',
-      minWidth: 235,
+      minWidth: 180,
       sortable: false
     },
     {

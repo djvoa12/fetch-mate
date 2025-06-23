@@ -1,5 +1,6 @@
 <script lang="ts">
   import '../app.css';
+  import { page } from '$app/state';
   import { validateAuth } from '$lib/authentication';
   import Header from '$lib/components/Layout/Header.svelte';
   import Loader from '$lib/components/Loader/Loader.svelte';
@@ -23,7 +24,7 @@
 </svelte:head>
 
 {#if store.isAuthenticated}
-  <div class="app flex flex-col xl:h-screen">
+  <div class="app flex flex-col {page.route.id === '/' ? 'xl:h-screen' : 'h-screen'}">
     <Header />
 
     <main class="pt-4 px-8 pb-8 flex flex-col h-full">
