@@ -17,10 +17,16 @@
   interface Props {
     class: string;
     searchLocations: Location[];
+    searchRadius: number;
     selectedLocation: Location | null;
   }
 
-  const { class: className = '', searchLocations, selectedLocation }: Props = $props();
+  const {
+    class: className = '',
+    searchLocations,
+    searchRadius,
+    selectedLocation
+  }: Props = $props();
 
   let isMapLoaded = $state<boolean>(false);
   let map = $state<Map>();
@@ -30,9 +36,10 @@
     if (isMapLoaded && selectedLocation) {
       setLocationPoint(selectedLocation);
       setSearchRadiusCircle(selectedLocation);
+      const zoom = searchRadius === 25 ? 8 : searchRadius === 10 ? 9 : 10;
       map!.flyTo({
         center: [selectedLocation.longitude, selectedLocation.latitude],
-        zoom: 8 // depends on radius
+        zoom
       });
     }
   });
@@ -136,7 +143,7 @@
   }
 
   function setSearchRadiusCircle({ latitude, longitude }: Location) {
-    const circlePolygon = circle([longitude, latitude], 25, { units: 'miles' });
+    const circlePolygon = circle([longitude, latitude], searchRadius, { units: 'miles' });
     const source = map!.getSource(SOURCE2) as mapboxgl.GeoJSONSource;
     source.setData({ type: 'FeatureCollection', features: [circlePolygon] });
   }

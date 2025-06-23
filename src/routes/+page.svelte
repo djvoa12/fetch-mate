@@ -391,5 +391,10 @@
     </Pagination.Root>
   </div>
 
-  <Map class="flex-1 mt-5 h-[500px] max-w-[900px]" {searchLocations} {selectedLocation} />
+  <Map
+    class="flex-1 mt-5 h-[500px] max-w-[900px]"
+    {searchLocations}
+    searchRadius={Number(searchRadius)}
+    {selectedLocation}
+  />
 </div>
