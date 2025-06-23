@@ -1,18 +1,34 @@
 <script lang="ts">
   import type { Location } from '$lib/types';
   import type { Feature, Point } from 'geojson';
-  import mapboxgl, { type Map } from 'mapbox-gl';
+  import mapboxgl from 'mapbox-gl';
+  import type {
+    GeoJSONFeature,
+    GeoJSONSource,
+    LngLatBoundsLike,
+    LngLatLike,
+    Map,
+    MapMouseEvent
+  } from 'mapbox-gl';
   import { onDestroy, onMount } from 'svelte';
   import circle from '@turf/circle';
 
   const CENTER: [number, number] = [-98.5795, 39.8283];
-  const MAP_BOUNDS: mapboxgl.LngLatBoundsLike = [
+  const MAP_BOUNDS: LngLatBoundsLike = [
     [-125, 24.5],
     [-66.5, 49.5]
   ];
   const SOURCE1 = 'selected-location-centroid';
   const SOURCE2 = 'search-radius-circle';
   const SOURCE3 = 'search-location-centroids';
+  const LAYER1 = 'selected-location-layer';
+  const LAYER2 = 'search-locations-layer';
+  const LAYER_IDS = [LAYER1, LAYER2];
+
+  const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false
+  });
 
   interface Props {
     class: string;
@@ -56,6 +72,8 @@
 
   onDestroy(() => {
     map?.off('load', onMapLoad);
+    map?.off('mouseenter', LAYER_IDS, onMouseEnterLocation);
+    map?.off('mouseleave', LAYER_IDS, onMouseLeaveLocation);
   });
 
   function initialize() {
@@ -66,6 +84,8 @@
       maxBounds: MAP_BOUNDS
     });
     map.on('load', onMapLoad);
+    map.on('mouseenter', LAYER_IDS, onMouseEnterLocation);
+    map.on('mouseleave', LAYER_IDS, onMouseLeaveLocation);
   }
 
   function onMapLoad() {
@@ -81,7 +101,7 @@
       data: { type: 'FeatureCollection', features: [] }
     });
     map!.addLayer({
-      id: 'selected-location-layer',
+      id: LAYER1,
       type: 'circle',
       source: SOURCE1,
       paint: {
@@ -115,7 +135,7 @@
       data: { type: 'FeatureCollection', features: [] }
     });
     map!.addLayer({
-      id: 'search-locations-layer',
+      id: LAYER2,
       type: 'circle',
       source: SOURCE3,
       paint: {
@@ -131,6 +151,7 @@
     const features: Feature<Point>[] = [
       {
         type: 'Feature',
+        id: 1,
         properties: { ...location },
         geometry: {
           type: 'Point',
@@ -138,38 +159,83 @@
         }
       }
     ];
-    const source = map!.getSource(SOURCE1) as mapboxgl.GeoJSONSource;
+    const source = map!.getSource(SOURCE1) as GeoJSONSource;
     source.setData({ type: 'FeatureCollection', features });
   }
 
   function setSearchRadiusCircle({ latitude, longitude }: Location) {
     const circlePolygon = circle([longitude, latitude], searchRadius, { units: 'miles' });
-    const source = map!.getSource(SOURCE2) as mapboxgl.GeoJSONSource;
+    const source = map!.getSource(SOURCE2) as GeoJSONSource;
     source.setData({ type: 'FeatureCollection', features: [circlePolygon] });
   }
 
   function setSearchRadiusLocationPoints(locations: Location[]) {
-    const features: Feature<Point>[] = locations.map((l) => ({
+    const features: Feature<Point>[] = locations.map((l, i) => ({
       type: 'Feature',
+      id: i + 1,
       properties: { ...l },
       geometry: {
         type: 'Point',
         coordinates: [l.longitude, l.latitude]
       }
     }));
-    const source = map!.getSource(SOURCE3) as mapboxgl.GeoJSONSource;
+    const source = map!.getSource(SOURCE3) as GeoJSONSource;
     source.setData({ type: 'FeatureCollection', features });
+  }
+
+  function onMouseEnterLocation(e: MapMouseEvent) {
+    map!.getCanvas().style.cursor = 'pointer';
+    const features = e.features as GeoJSONFeature[];
+    const geometry = features[0].geometry as Point;
+    const coordinates = geometry.coordinates.slice();
+    const props = features[0].properties;
+    popup
+      .setLngLat(coordinates as LngLatLike)
+      .setHTML(
+        `<div class="popup">
+          <div>
+            <span class="label text-xs">City:</span>
+            <span class="value text-xs">${props?.city}</span>
+          </div>
+          <div>
+            <span class="label text-xs">Zip Code:</span>
+            <span class="value text-xs">${props?.zip_code}</span>
+          </div>
+          <div>
+            <span class="label text-xs">County:</span>
+            <span class="value text-xs">${props?.county}</span>
+          </div>
+          <div>
+            <span class="label text-xs">State:</span>
+            <span class="value text-xs">${props?.state}</span>
+          </div>
+        </div>`
+      )
+      .addTo(map!);
+  }
+
+  function onMouseLeaveLocation() {
+    map!.getCanvas().style.cursor = '';
+    popup.remove();
   }
 </script>
 
 <div class="map relative {className}">
   {#if typeof window !== 'undefined'}
-    <div bind:this={mapContainer} class="mapbox-map w-full h-full absolute top-0 bottom-0"></div>
+    <div bind:this={mapContainer} class="mapbox-map w-full h-full"></div>
   {/if}
 </div>
 
 <style>
   :global(.mapboxgl-ctrl-attrib) {
     font-size: 10px;
+  }
+
+  :global(.mapboxgl-popup-content) {
+    background: var(--muted);
+  }
+
+  :global(.mapboxgl-popup-tip) {
+    border-top-color: var(--muted) !important;
   }
 </style>
