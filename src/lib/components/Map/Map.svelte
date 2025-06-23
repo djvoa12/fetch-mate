@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { store } from '$lib/stores/app.svelte';
   import type { Location } from '$lib/types';
+  import circle from '@turf/circle';
   import type { Feature, Point } from 'geojson';
   import mapboxgl from 'mapbox-gl';
   import type {
@@ -11,7 +13,6 @@
     MapMouseEvent
   } from 'mapbox-gl';
   import { onDestroy, onMount } from 'svelte';
-  import circle from '@turf/circle';
 
   const CENTER: [number, number] = [-98.5795, 39.8283];
   const MAP_BOUNDS: LngLatBoundsLike = [
@@ -44,9 +45,36 @@
     selectedLocation
   }: Props = $props();
 
+  let mapStyle: 'dark-v11' | 'light-v11' = store.isDarkTheme ? 'dark-v11' : 'light-v11';
+
   let isMapLoaded = $state<boolean>(false);
   let map = $state<Map>();
   let mapContainer = $state<HTMLDivElement>();
+
+  $effect(() => {
+    const newStyle = store.isDarkTheme ? 'dark-v11' : 'light-v11';
+
+    if (isMapLoaded && mapStyle !== newStyle) {
+      map!.once('style.load', onChangeTheme);
+      map!.setStyle(`mapbox://styles/mapbox/${newStyle}`);
+      mapStyle = newStyle;
+    }
+  });
+
+  function onChangeTheme() {
+    addSource1();
+    addSource2();
+    addSource3();
+
+    if (selectedLocation) {
+      setLocationPoint(selectedLocation);
+      setSearchRadiusCircle(selectedLocation);
+    }
+
+    if (searchLocations) {
+      setSearchRadiusLocationPoints(searchLocations);
+    }
+  }
 
   $effect(() => {
     if (isMapLoaded && selectedLocation) {
@@ -80,7 +108,7 @@
     map = new mapboxgl.Map({
       center: CENTER,
       container: mapContainer as HTMLDivElement,
-      style: 'mapbox://styles/mapbox/dark-v11',
+      style: `mapbox://styles/mapbox/${mapStyle}`,
       maxBounds: MAP_BOUNDS
     });
     map.on('load', onMapLoad);
