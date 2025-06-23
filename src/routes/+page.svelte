@@ -341,12 +341,12 @@
   </Button>
 </div>
 
-<div class="flex flex-col gap-2 flex-wrap xl:flex-row">
+<div class="flex flex-col gap-4 flex-wrap xl:flex-row">
   <div class="flex flex-col xl:w-[800px]">
     <div class="flex justify-between mb-1">
       <span class="text-xs">
         {Intl.NumberFormat('en-US').format(count)}
-        {count === 1 ? 'dog' : 'dogs'} found
+        {count === 1 ? 'dog' : 'dogs'}
       </span>
       <span class="text-xs">Current Page: {page}</span>
     </div>
@@ -397,8 +397,8 @@
 
   <div class="flex flex-col flex-1 xl:block">
     <p class="text-xs mb-1">
-      <span class="material-icons relative top-[2px] orange" style="font-size: 12px;">info</span>
-      Note: The map is currently under development.
+      {Intl.NumberFormat('en-US').format(searchLocations.length)}
+      {searchLocations.length === 1 ? 'location' : 'locations'}
     </p>
     <Map
       class="h-[500px] max-w-[800px]"
