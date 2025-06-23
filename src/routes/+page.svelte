@@ -7,6 +7,7 @@
     queryLocations,
     queryLocationsByZipCodes
   } from '$lib/api';
+  import Map from '$lib/components/Map/Map.svelte';
   import AgTable from '$lib/components/Table/AgTable.svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
@@ -78,7 +79,6 @@
   ];
 
   let sort: string = 'breed:asc';
-  let zipCodes: string[] = [];
 
   let ageRange = $state<[number, number]>([AGE_MIN, AGE_MAX]);
   let breeds = $state<string[]>([]);
@@ -90,7 +90,11 @@
   let selectedBreeds = $state<string[]>([]);
   let zipCode = $state<string>('');
 
+  let searchLocations = $state<Location[]>([]);
+  let selectedLocation = $state<Location | null>(null);
+
   let isValidZipCode = $derived<boolean>(/^\d{5}$/.test(zipCode));
+  let zipCodes = $derived<string[]>(searchLocations.map((l) => l.zip_code));
 
   onMount(() => {
     fetchAllBreeds();
@@ -171,9 +175,10 @@
       const [location] = await queryLocationsByZipCodes([zipCode]);
 
       if (location) {
+        selectedLocation = location;
         const body = generateLocationBody(location);
         const locations = await queryLocations(body);
-        zipCodes = locations.map((r) => r.zip_code);
+        searchLocations = locations;
         queryDogs();
       } else {
         dogs = [];
@@ -332,53 +337,59 @@
   </Button>
 </div>
 
-<div class="flex justify-between mb-1">
-  <span class="text-xs">
-    {Intl.NumberFormat('en-US').format(count)}
-    {count === 1 ? 'dog' : 'dogs'} found
-  </span>
-  <span class="text-xs">Current Page: {page}</span>
+<div class="flex gap-2 flex-wrap">
+  <div class="flex flex-col w-[900px]">
+    <div class="flex justify-between mb-1">
+      <span class="text-xs">
+        {Intl.NumberFormat('en-US').format(count)}
+        {count === 1 ? 'dog' : 'dogs'} found
+      </span>
+      <span class="text-xs">Current Page: {page}</span>
+    </div>
+
+    <AgTable
+      class="w-full mb-4"
+      columnDefs={COL_DEFS}
+      {isLoading}
+      rowData={dogs}
+      onSelect={selectDogs}
+      onSort={sortDogs}
+    />
+
+    <Pagination.Root
+      {count}
+      bind:page
+      perPage={PAGE_SIZE}
+      onPageChange={() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        queryDogs();
+      }}
+    >
+      {#snippet children({ pages, currentPage })}
+        <Pagination.Content>
+          <Pagination.Item>
+            <Pagination.PrevButton />
+          </Pagination.Item>
+          {#each pages as page (page.key)}
+            {#if page.type === 'ellipsis'}
+              <Pagination.Item>
+                <Pagination.Ellipsis />
+              </Pagination.Item>
+            {:else}
+              <Pagination.Item>
+                <Pagination.Link {page} isActive={currentPage === page.value}>
+                  {page.value}
+                </Pagination.Link>
+              </Pagination.Item>
+            {/if}
+          {/each}
+          <Pagination.Item>
+            <Pagination.NextButton />
+          </Pagination.Item>
+        </Pagination.Content>
+      {/snippet}
+    </Pagination.Root>
+  </div>
+
+  <Map class="flex-1 mt-5 h-[500px] max-w-[900px]" {searchLocations} {selectedLocation} />
 </div>
-
-<AgTable
-  class="w-full mb-4"
-  columnDefs={COL_DEFS}
-  {isLoading}
-  rowData={dogs}
-  onSelect={selectDogs}
-  onSort={sortDogs}
-/>
-
-<Pagination.Root
-  {count}
-  bind:page
-  perPage={PAGE_SIZE}
-  onPageChange={() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    queryDogs();
-  }}
->
-  {#snippet children({ pages, currentPage })}
-    <Pagination.Content>
-      <Pagination.Item>
-        <Pagination.PrevButton />
-      </Pagination.Item>
-      {#each pages as page (page.key)}
-        {#if page.type === 'ellipsis'}
-          <Pagination.Item>
-            <Pagination.Ellipsis />
-          </Pagination.Item>
-        {:else}
-          <Pagination.Item>
-            <Pagination.Link {page} isActive={currentPage === page.value}>
-              {page.value}
-            </Pagination.Link>
-          </Pagination.Item>
-        {/if}
-      {/each}
-      <Pagination.Item>
-        <Pagination.NextButton />
-      </Pagination.Item>
-    </Pagination.Content>
-  {/snippet}
-</Pagination.Root>

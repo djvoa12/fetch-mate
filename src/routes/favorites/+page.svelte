@@ -71,30 +71,34 @@
   });
 </script>
 
-<div class="border-b mb-4">
-  <h1 class="mb-2">
-    <span class="orange">Step 2:</span>
-    Review your pups and fetch!
-  </h1>
-</div>
+<div class="favorites flex flex-col max-w-[1000px] m-auto">
+  <div class="border-b mb-4">
+    <h1 class="mb-2">
+      <span class="orange">Step 2:</span>
+      Review your pups and fetch!
+    </h1>
+  </div>
 
-<div class="toolbar flex mb-4 justify-between flex-wrap">
-  <Button variant="link" onclick={() => goto('/')}>
-    <span class="material-icons">arrow_back</span>
-  </Button>
-
-  <div class="flex gap-2">
-    <Button
-      variant="destructive"
-      onclick={() => {
-        store.favoriteDogs = [];
-      }}
-    >
-      Clear All
+  <div class="toolbar flex mb-4 justify-between flex-wrap">
+    <Button variant="link" onclick={() => goto('/')}>
+      <span class="material-icons">arrow_back</span>
     </Button>
 
-    <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/match')}>Fetch Mate</Button>
-  </div>
-</div>
+    <div class="flex gap-2">
+      <Button
+        variant="destructive"
+        onclick={() => {
+          store.favoriteDogs = [];
+        }}
+      >
+        Clear All
+      </Button>
 
-<AgTable class="w-full" columnDefs={COL_DEFS} rowData={store.favoriteDogs} />
+      <Button disabled={!store.favoriteDogs.length} onclick={() => goto('/match')}
+        >Fetch Mate</Button
+      >
+    </div>
+  </div>
+
+  <AgTable class="w-full" columnDefs={COL_DEFS} rowData={store.favoriteDogs} />
+</div>

@@ -26,7 +26,7 @@
   <div class="app">
     <Header />
 
-    <main class="py-4 px-8 max-w-[1000px] m-auto">
+    <main class="py-4 px-8">
       {@render children()}
     </main>
   </div>
