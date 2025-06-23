@@ -33,7 +33,7 @@
   }
 </script>
 
-<div class="flex flex-col max-w-[450px] m-auto">
+<div class="flex flex-col max-w-[450px] h-full m-auto">
   {#if store.matchedDog}
     <h1 class="text-center mb-4">
       You've been matched!
@@ -41,7 +41,7 @@
     </h1>
   {/if}
 
-  <Card.Root class="w-fit m-auto min-w-[300px] min-h-[300px]">
+  <Card.Root class="min-w-[300px] min-h-[300px]">
     {#if isLoading}
       <Loader />
     {:else if store.matchedDog}
