@@ -31,6 +31,10 @@
     closeOnClick: false
   });
 
+  const mapboxToken =
+    'pk.eyJ1IjoiZGp2b2ExMiIsImEiOiJjbWM4M2psOGQwc3A0MmlzM3hkYWZ4ZmIwIn0.zicT_v7vsuInz8XT0CnBdA'; // URL Restricted Key
+  mapboxgl.accessToken = mapboxToken;
+
   interface Props {
     class: string;
     searchLocations: Location[];
